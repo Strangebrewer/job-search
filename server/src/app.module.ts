@@ -6,6 +6,8 @@ import { CommonModule } from './common/common.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import appConfig from './config/app.config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { RecruitersModule } from './recruiters/recruiters.module';
+import { JobsModule } from './jobs/jobs.module';
 
 @Module({
   imports: [
@@ -17,7 +19,9 @@ import { MongooseModule } from '@nestjs/mongoose';
       useFactory: (config: ConfigService) => ({
         uri: config.get('MONGODB_URI') || `mongodb+srv://${config.get('DB_USERNAME')}:${config.get('DB_PASSWORD')}@${config.get('DB_CLUSTER')}.mongodb.net/${config.get('DB_NAME')}?retryWrites=true`
       })
-    })
+    }),
+    RecruitersModule,
+    JobsModule
   ],
   controllers: [AppController],
   providers: [AppService],
