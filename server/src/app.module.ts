@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { CommonModule } from './common/common.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import appConfig from './config/app.config';
 import { MongooseModule } from '@nestjs/mongoose';
 
@@ -12,7 +12,12 @@ import { MongooseModule } from '@nestjs/mongoose';
     ConfigModule.forRoot({ isGlobal: true, load: [appConfig]}),
     CommonModule,
     UsersModule,
-    MongooseModule.forRoot('mongodb://localhost:27017/rememe')
+    MongooseModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        uri: config.get('MONGODB_URI') || `mongodb+srv://${config.get('DB_USERNAME')}:${config.get('DB_PASSWORD')}@${config.get('DB_CLUSTER')}.mongodb.net/${config.get('DB_NAME')}?retryWrites=true`
+      })
+    })
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -168,15 +168,6 @@ export const Select = styled.select`
   }
 `;
 
-export const Form = props => {
-  return (
-    <StyledForm onSubmit={props.submit} style={props.style}>
-      {props.children}
-      <input hidden type="submit" />
-    </StyledForm>
-  )
-};
-
 export const ButtonContainer = styled.div`
   margin-left: 16px;
   margin-top: 16px;

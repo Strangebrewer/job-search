@@ -1,28 +1,13 @@
 import { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import Folder from '../components/elements/Folder';
 import Header from '../components/elements/Header';
 
-const FOLDERS = [
-  {
-    name: 'Home',
-    children: [
-      {
-        name: 'First Subfolder',
-        children: [{ name: 'Susie' }, { name: 'Fred' }]
-      },
-      { name: 'Second Subfolder', children: [] }
-    ]
-  },
-  {
-    name: 'Stuff',
-    children: [{ name: 'Stuff Child One' }, { name: 'Stuff Chile Two' }]
-  }
-];
-
 const Main = props => {
+  console.log('props.user:::', props.user);
+
   useEffect(() => {
     (function () {
       /**
@@ -36,35 +21,28 @@ const Main = props => {
   return (
     <Wrapper>
       <Header bgType="rainbow">
-        <Title>The Monolith</Title>
+        <Title>Job Search</Title>
       </Header>
 
       {props.authenticated
         ? (
           <Description>
-            <h3>Hi, Authenticated User.</h3>
+            <h3>Hi, {props.user.username}</h3>
           </Description>
         ) : (
           <Description>
-            <h3>Hi There.</h3>
+            <h3>Hi There. You should go <Link to={'/login'} style={{ color: 'white' }}>login</Link></h3>
           </Description>
         )
       }
-
-      <FolderColumn>
-        {FOLDERS.map(f => {
-          return (
-            <Folder key={f.name} folder={f} level={0} />
-          )
-        })}
-      </FolderColumn>
     </Wrapper>
   );
 };
 
 function mapStateToProps(state) {
   return {
-    authenticated: state.auth.authenticated
+    authenticated: state.auth.authenticated,
+    user: state.user
   };
 }
 
@@ -83,61 +61,13 @@ const Title = styled.h1`
 `;
 
 const Description = styled.div`
-margin: 22px auto 0 auto;
-width: 620px;
+  margin: 22px auto 0 auto;
+  width: 620px;
 
-> h3 {
-  color: ${props => props.theme.mainRed};
-  font-weight: 500;
-  font-size: 1.6rem;
-  margin: 6px 10px 0 0;
-
-  > button {
-    background-color: transparent;
-    color: ${props => props.theme.types};
-    cursor: pointer;
-    outline: transparent;
-    border: none;
+  > h3 {
+    color: ${props => props.theme.mainRed};
     font-weight: 500;
     font-size: 1.6rem;
-    padding-left: 0;
-    transition: color 0.2s ease-in-out;
-
-    &:hover {
-      color: ${props => props.theme.nPurple};
-    }
+    margin: 6px 10px 0 0;
   }
-}
-
-> p {
-  margin-top: 12px;
-  line-height: 1.5;
-
-  > button {
-    background-color: transparent;
-    color: ${props => props.theme.types};
-    cursor: pointer;
-    font-size: 1rem;
-    outline: transparent;
-    border: none;
-    padding-left: 0;
-    padding-right: 0;
-    transition: color 0.2s ease-in-out;
-
-    &:hover {
-      color: ${props => props.theme.nPurple};
-    }
-  }
-}
-`;
-
-const FolderColumn = styled.div`
-  width: 200px;
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  left: 0;
-  top: 200px;
-  bottom: 0;
-  border: 1px solid red;
 `;

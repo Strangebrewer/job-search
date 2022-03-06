@@ -6,12 +6,12 @@ import { Error, Form } from './Signup';
 import { Input, MainButton } from '../../styles/components';
 
 const Login = props => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   async function enterSandman(e) {
     e.preventDefault();
-    await props.login({ email, password });
+    await props.login({ username, password });
     setTimeout(() => props.clearError(), 5000);
   }
 
@@ -20,10 +20,10 @@ const Login = props => {
       <h3>Login</h3>
       <Input
         type="text"
-        name="email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-        placeholder="Enter your email"
+        name="username"
+        value={username}
+        onChange={e => setUsername(e.target.value)}
+        placeholder="Enter your username"
       />
       <Input
         type="password"
@@ -34,13 +34,13 @@ const Login = props => {
       />
       <MainButton
         color="nBlue"
-        disabled={!email || !password}
+        disabled={!username || !password}
         onClick={enterSandman}
       >
         Abandon all hope...
       </MainButton>
 
-      {/* <button className="toggle-button" onClick={props.toggleForms}>register</button> */}
+      <button className="toggle-button" onClick={props.toggleForms}>register</button>
       <Error>{props.error}</Error>
     </Form>
   );
