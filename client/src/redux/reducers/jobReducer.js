@@ -1,6 +1,6 @@
 import * as Job from '../action-types/jobTypes';
 
-export function jobReducer(state = {}, action) {
+export function jobReducer(state = [], action) {
   switch (action.type) {
     case Job.SET_ALL_JOBS:
       return [...action.payload];

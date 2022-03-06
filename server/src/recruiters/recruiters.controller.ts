@@ -13,7 +13,7 @@ export class RecruitersController {
   @UseGuards(JwtAuthGuard)
   @Get()
   findAll(@User() user: UserEntity, @Query() query: Record<string, unknown>) {
-    return this.recruitersService.findAll(user._id, query);
+    return this.recruitersService.findAll(user.id, query);
   }
 
   @UseGuards(JwtAuthGuard)

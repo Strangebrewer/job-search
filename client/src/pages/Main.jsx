@@ -4,17 +4,22 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import Header from '../components/elements/Header';
+import ModalButton from '../components/elements/ModalButton';
+import RecruiterModal from '../components/RecruiterModal';
+
+import { getRecruiters, saveRecruiter } from '../redux/actions/recruiterActions';
 
 const Main = props => {
   console.log('props.user:::', props.user);
 
+  const { recruiters } = props;
+
   useEffect(() => {
+    console.log('props.recruiters:::', props.recruiters);
     (function () {
-      /**
-       * Have it do a recursive search on load to find the subfolder or file that's in the url
-       * Then it can trace back through all the parents and add them to a path array
-       * Use that array to force otherwise closed folders to be open.
-       */
+      if (!recruiters.length) {
+        props.getRecruiters();
+      }
     })();
   }, []);
 
@@ -28,6 +33,22 @@ const Main = props => {
         ? (
           <Description>
             <h3>Hi, {props.user.username}</h3>
+            <ModalButton
+              callback={props.saveRecruiter}
+              title="add a new recruiter"
+              modal={RecruiterModal}
+            >
+              Add New Recruiter
+            </ModalButton>
+
+            {recruiters && recruiters.length
+              ? recruiters.map(rec => {
+                return (
+                  <div>
+                    <p>{rec.name}</p>
+                  </div>
+                )
+              }) : null}
           </Description>
         ) : (
           <Description>
@@ -42,11 +63,17 @@ const Main = props => {
 function mapStateToProps(state) {
   return {
     authenticated: state.auth.authenticated,
+    recruiters: state.recruiters,
     user: state.user
   };
 }
 
-export default connect(mapStateToProps)(Main);
+const mapDispatchToProps = {
+  getRecruiters,
+  saveRecruiter,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Main);
 
 const Wrapper = styled.div`
   min-height: 100vh;

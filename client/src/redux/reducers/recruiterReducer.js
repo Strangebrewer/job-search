@@ -1,6 +1,6 @@
 import * as Recruiter from '../action-types/recruiterTypes';
 
-export function recruiterReducer(state = {}, action) {
+export function recruiterReducer(state = [], action) {
   switch (action.type) {
     case Recruiter.SET_ALL_RECRUITERS:
       return [...action.payload];

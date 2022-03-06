@@ -13,10 +13,12 @@ export class RecruitersService {
 
   findAll(userId: string, query: Record<string, unknown>) {
     query = { user: userId, ...query };
+    console.log('query:::', query);
     return this.recruiterModel.find(query)
   }
 
   create(createRecruiterDto: CreateRecruiterDto) {
+    console.log('createRecruiterDto:::', createRecruiterDto);
     return this.recruiterModel.create(createRecruiterDto);
   }
 

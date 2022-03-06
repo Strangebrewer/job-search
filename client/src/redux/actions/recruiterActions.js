@@ -5,6 +5,7 @@ export function getRecruiters(query) {
   return async dispatch => {
     try {
       const { data } = await API.recruiter.list(query);
+      console.log('data:::', data);
       dispatch({ type: Recruiter.SET_ALL_RECRUITERS, payload: data });
     } catch (err) {
       console.log('err in getRecruiters action:::', err);
@@ -13,6 +14,7 @@ export function getRecruiters(query) {
 }
 
 export function saveRecruiter(recruiter) {
+  console.log('saving this recruiter:::', recruiter);
   return async dispatch => {
     try {
       let data;

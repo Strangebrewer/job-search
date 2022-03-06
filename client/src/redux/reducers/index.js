@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
 import { authReducer, userReducer } from './authReducer';
-import { recruiterReducer} from './recruiterReducer';
+import { recruiterReducer } from './recruiterReducer';
 import { jobReducer } from './jobReducer';
 
 import { UNAUTHENTICATED } from '../action-types/authTypes';
