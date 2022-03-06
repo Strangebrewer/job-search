@@ -13,6 +13,8 @@ import { JobsModule } from './jobs/jobs.module';
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [appConfig]}),
     CommonModule,
+    JobsModule,
+    RecruitersModule,
     UsersModule,
     MongooseModule.forRootAsync({
       inject: [ConfigService],
@@ -20,8 +22,6 @@ import { JobsModule } from './jobs/jobs.module';
         uri: config.get('MONGODB_URI') || `mongodb+srv://${config.get('DB_USERNAME')}:${config.get('DB_PASSWORD')}@${config.get('DB_CLUSTER')}.mongodb.net/${config.get('DB_NAME')}?retryWrites=true`
       })
     }),
-    RecruitersModule,
-    JobsModule
   ],
   controllers: [AppController],
   providers: [AppService],
