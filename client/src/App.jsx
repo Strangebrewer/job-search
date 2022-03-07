@@ -40,7 +40,7 @@ function App(props) {
         console.log('e in App.jsx useEffect:::', e);
         if (token) resetAuthToken();
       } finally {
-        setLoading(false);
+        setTimeout(() => setLoading(false), 750);
       }
     })();
   }, [getUser]);

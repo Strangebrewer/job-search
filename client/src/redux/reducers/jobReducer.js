@@ -3,7 +3,7 @@ import * as Job from '../action-types/jobTypes';
 export function jobReducer(state = [], action) {
   switch (action.type) {
     case Job.SET_ALL_JOBS:
-      return [...action.payload];
+      return action.payload;
     // case Job.SET_CURRENT_JOB:
     //   return action.payload;
     case Job.ADD_JOB:

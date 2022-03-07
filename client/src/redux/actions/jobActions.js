@@ -5,6 +5,7 @@ export function getJobs(query) {
   return async dispatch => {
     try {
       const { data } = await API.job.list(query);
+      console.log('data in getJobs:::', data);
       dispatch({ type: Job.SET_ALL_JOBS, payload: data });
     } catch (err) {
       console.log('err in getJobs action:::', err);

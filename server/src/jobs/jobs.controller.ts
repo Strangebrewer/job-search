@@ -14,7 +14,8 @@ export class JobsController {
   @UseGuards(JwtAuthGuard)
   @Get()
   findAll(@User() user: UserEntity, @Query() query: Record<string, unknown>) {
-    return this.jobsService.findAll(user._id, query);
+    console.log('here I am, honkey');
+    return this.jobsService.findAll(user.id, query);
   }
 
   @UseGuards(JwtAuthGuard)

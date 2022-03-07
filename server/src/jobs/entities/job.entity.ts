@@ -3,13 +3,24 @@ import { Document } from 'mongoose';
 import { Recruiter } from "src/recruiters/entity/recruiter.entity";
 import { User } from "src/users/entities/user.entity";
 
+type Interview = {
+  number: 'first' | 'second' | 'third' | 'etc';
+  date: Date;
+  interviewers: string[];
+};
+
+type Comment = {
+  comment: string,
+  date: Date
+};
+
 @Schema({ timestamps: true })
 export class Job extends Document {
   @Prop()
   date_applied: Date;
 
   @Prop()
-  interview_dates: Date[];
+  interviews: Interview[];
 
   @Prop()
   point_of_contact: string;
@@ -53,7 +64,7 @@ export class Job extends Document {
   declined: string;
 
   @Prop()
-  comments: string[];
+  comments: Comment[];
 
   @Prop({ ref: User.name, required: true })
   user: string;

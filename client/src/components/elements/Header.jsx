@@ -66,7 +66,7 @@ export default connect(mapStateToProps, { logout })(Header);
 
 const Wrapper = styled.div`
   padding-top: 16px;
-  height: ${props => props.location === 'reading' ? '136px' : '100px'};
+  min-height: ${props => props.location === 'reading' ? '136px' : '100px'};
   width: 100%;
 `;
 

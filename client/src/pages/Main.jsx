@@ -1,59 +1,84 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import Header from '../components/elements/Header';
 import ModalButton from '../components/elements/ModalButton';
+import JobModal from '../components/JobModal';
 import RecruiterModal from '../components/RecruiterModal';
 
+import JobCard from '../components/JobCard';
+
 import { getRecruiters, saveRecruiter } from '../redux/actions/recruiterActions';
+import { getJobs, saveJob } from '../redux/actions/jobActions';
 
 const Main = props => {
-  console.log('props.user:::', props.user);
+  const [loading, setLoading] = useState(true);
 
-  const { recruiters } = props;
+  const { jobs, recruiters, authenticated, user } = props;
 
   useEffect(() => {
-    console.log('props.recruiters:::', props.recruiters);
-    (function () {
+    (async function () {
       if (!recruiters.length) {
-        props.getRecruiters();
+        await props.getRecruiters();
       }
+      if (!jobs.length) {
+        await props.getJobs();
+      }
+      setLoading(false);
     })();
-  }, []);
+  }, [recruiters.length, jobs.length]);
+
+  const jobsHeader = {
+    job_title: 'Job Title',
+    company_name: 'Company Name',
+    work_from: 'Office Type',
+    status: 'Status'
+  };
 
   return (
     <Wrapper>
       <Header bgType="rainbow">
-        <Title>Job Search</Title>
+        <Title>{authenticated ? `${user.username}'s ` : null}Job Search</Title>
+
+        {authenticated
+          ? (
+            <Buttons>
+              <ModalButton
+                callback={props.saveRecruiter}
+                title="add a new recruiter"
+                modal={RecruiterModal}
+              >
+                Add New Recruiter
+              </ModalButton>
+
+              <ModalButton
+                callback={props.saveJob}
+                title="add a new job"
+                modal={JobModal}
+              >
+                Add New Job
+              </ModalButton>
+            </Buttons>
+          ) : null}
       </Header>
 
-      {props.authenticated
+      {authenticated
         ? (
-          <Description>
-            <h3>Hi, {props.user.username}</h3>
-            <ModalButton
-              callback={props.saveRecruiter}
-              title="add a new recruiter"
-              modal={RecruiterModal}
-            >
-              Add New Recruiter
-            </ModalButton>
-
-            {recruiters && recruiters.length
-              ? recruiters.map(rec => {
-                return (
-                  <div>
-                    <p>{rec.name}</p>
-                  </div>
-                )
-              }) : null}
-          </Description>
+          <Container>
+            <h3>Jerbs!</h3>
+            <JobCard isHeader job={jobsHeader} />
+            {!loading ? jobs.map(job => {
+              return (
+                <JobCard key={`job-card-${job._id}`} job={job} />
+              )
+            }) : null}
+          </Container>
         ) : (
-          <Description>
+          <Container>
             <h3>Hi There. You should go <Link to={'/login'} style={{ color: 'white' }}>login</Link></h3>
-          </Description>
+          </Container>
         )
       }
     </Wrapper>
@@ -63,13 +88,16 @@ const Main = props => {
 function mapStateToProps(state) {
   return {
     authenticated: state.auth.authenticated,
+    jobs: state.jobs,
     recruiters: state.recruiters,
     user: state.user
   };
 }
 
 const mapDispatchToProps = {
+  getJobs,
   getRecruiters,
+  saveJob,
   saveRecruiter,
 };
 
@@ -87,14 +115,19 @@ const Title = styled.h1`
   text-align: center;
 `;
 
-const Description = styled.div`
+const Container = styled.main`
   margin: 22px auto 0 auto;
-  width: 620px;
+  width: 900px;
 
   > h3 {
     color: ${props => props.theme.mainRed};
     font-weight: 500;
-    font-size: 1.6rem;
-    margin: 6px 10px 0 0;
+    font-size: 1.8rem;
+    margin: 6px 0;
   }
+`;
+
+const Buttons = styled.div`
+  margin-bottom: 12px;
+  text-align: center;
 `;
