@@ -4,8 +4,6 @@ export function jobReducer(state = [], action) {
   switch (action.type) {
     case Job.SET_ALL_JOBS:
       return action.payload;
-    // case Job.SET_CURRENT_JOB:
-    //   return action.payload;
     case Job.ADD_JOB:
       return [...state, action.payload];
     case Job.EDIT_JOB:

@@ -1,17 +1,15 @@
 import { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
 
 import Header from '../components/elements/Header';
 import ModalButton from '../components/elements/ModalButton';
-import JobModal from '../components/JobModal';
 import RecruiterCard from '../components/RecruiterCard';
 import RecruiterModal from '../components/RecruiterModal';
 
 import { getJobs, saveJob } from '../redux/actions/jobActions';
 import { getRecruiters, saveRecruiter } from '../redux/actions/recruiterActions';
 import { Label, Select } from '../styles/components';
+import { RATINGS } from '../utils/constants';
 
 import { Buttons, Container, Filters, Title, Wrapper } from './Main';
 
@@ -73,11 +71,7 @@ const RecruitersList = props => {
               <Label>Filter by Rating</Label>
               <Select onChange={filter}>
                 <option value="">select a rating</option>
-                <option value={1}>1</option>
-                <option value={2}>2</option>
-                <option value={3}>3</option>
-                <option value={4}>4</option>
-                <option value={5}>5</option>
+                {RATINGS.map(r => <option key={`rating-${r}`} value={r}>{r}</option>)}
               </Select>
             </div>
           </Filters>

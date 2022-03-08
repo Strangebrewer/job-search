@@ -8,6 +8,7 @@ import Modal from "./elements/Modal";
 
 import { saveRecruiter, deleteRecruiter } from '../redux/actions/recruiterActions';
 import { format } from "date-fns";
+import { RATINGS } from "../utils/constants";
 
 const RecruiterCard = props => {
   const [expanded, setExpanded] = useState(false);
@@ -71,7 +72,7 @@ const RecruiterCard = props => {
                 <ModalButton
                   callback={updateRating}
                   title="update job status"
-                  items={[{ label: 'Rating', type: 'select', options: [1,2,3,4,5] }]}
+                  items={[{ label: 'Rating', type: 'select', options: RATINGS }]}
                   {...sharedModalProps}
                 >
                   <i className="fas fa-forward" />

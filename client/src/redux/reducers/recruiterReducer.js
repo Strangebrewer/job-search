@@ -4,8 +4,6 @@ export function recruiterReducer(state = [], action) {
   switch (action.type) {
     case Recruiter.SET_ALL_RECRUITERS:
       return [...action.payload];
-    // case Recruiter.SET_CURRENT_RECRUITER:
-    //   return action.payload;
     case Recruiter.ADD_RECRUITER:
       return [...state, action.payload];
     case Recruiter.EDIT_RECRUITER:

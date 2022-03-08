@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { MainButton, Input, Label, Select } from '../styles/components';
+import { RATINGS } from '../utils/constants';
 import { Wrapper, Content, Body, Buttons, CloseBtn } from './elements/Modal';
 
 const RecruiterModal = props => {
@@ -141,11 +142,7 @@ const RecruiterModal = props => {
                 onChange={handleInputChange}
                 full
               >
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
+                {RATINGS.map(r => <option key={`rating-${r}`} value={r}>{r}</option>)}
               </Select>
             </div>
 

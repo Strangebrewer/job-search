@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import Header from '../components/elements/Header';
 import ModalButton from '../components/elements/ModalButton';
 import JobModal from '../components/JobModal';
-import RecruiterModal from '../components/RecruiterModal';
 
 import JobCard from '../components/JobCard';
 
