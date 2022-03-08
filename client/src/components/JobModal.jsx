@@ -56,7 +56,7 @@ const JobModal = props => {
     if (state) data.company_state = state;
     if (recruiter) data.recruiter = recruiter;
     if (workFrom) data.work_from = workFrom;
-    if (comment) data.comments.push(comment);
+    if (comment) data.comments.push({ comment, date: new Date() });
 
     props.callback(data);
     closeModal();

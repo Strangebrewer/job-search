@@ -8,6 +8,7 @@ import Authoritaw from './pages/Authoritaw';
 import Main from './pages/Main';
 
 import Authentication from './utils/Authentication';
+import RecruitersList from './pages/RecruitersList';
 import { Spinner, SpinnerWrap } from './styles/Elements';
 
 import { setAuthToken, resetAuthToken } from './utils/token';
@@ -66,11 +67,17 @@ function App(props) {
         ) : (
           <Router>
             <Switch>
-              <Route exact path="/">
-                {routeProps => (
-                  <Main {...routeProps} toggleMode={toggleMode} mode={currentTheme} />
-                )}
-              </Route>
+              <Route
+                exact
+                path="/"
+                component={Authentication(Main, { required: true, authenticated: props.authenticated })}
+              />
+
+              <Route
+                exact
+                path="/recruiters"
+                component={Authentication(RecruitersList, { required: true, authenticated: props.authenticated })}
+              />
 
               <Route
                 exact

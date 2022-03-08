@@ -28,6 +28,16 @@ const Header = props => {
             home
           </NavButton>
         </div>
+        
+        <div>
+          <NavButton
+            onClick={() => goTo('/recruiters')}
+            title="Where are my recruiters?!?"
+            disabled={location === '/recruiters'}
+          >
+            recruiters
+          </NavButton>
+        </div>
 
         {props.authenticated
           ? (

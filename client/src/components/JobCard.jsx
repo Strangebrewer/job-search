@@ -10,7 +10,7 @@ import Modal from "./elements/Modal";
 import { STATUSES } from "../utils/constants";
 import { capitalize } from "../utils/utils";
 
-import { saveJob } from '../redux/actions/jobActions';
+import { saveJob, deleteJob } from '../redux/actions/jobActions';
 
 const JobCard = props => {
   const [expanded, setExpanded] = useState(false);
@@ -23,7 +23,7 @@ const JobCard = props => {
     if (expanded) setTimeout(() => setVisibility('hidden'), 200);
     if (!expanded) setTimeout(() => setVisibility('visible'), 200);
     const numComments = job.comments && Array.isArray(job.comments) ? job.comments.length : 0;
-    const calcHeight = 200 + (numComments * 40);
+    const calcHeight = 200 + (numComments * 32);
     setHeight(`${calcHeight}px`);
     setExpanded(!expanded);
   }
@@ -31,6 +31,10 @@ const JobCard = props => {
   function editJob(data) {
     data = { _id: job._id, ...data };
     props.saveJob(data);
+  }
+
+  function deleteJob() {
+    props.deleteJob(job._id);
   }
 
   function addInterview(data) {
@@ -46,19 +50,16 @@ const JobCard = props => {
   }
 
   function addComment(data) {
-    console.log('data in addComment:::', data);
     const comments = job.comments && Array.isArray(job.comments) ? job.comments : [];
     comments.push({ comment: data.comment, date: new Date() });
     editJob({ comments });
   }
 
   function addApplyDate(data) {
-    console.log('data in addApplyDate:::', data);
     editJob({ date_applied: new Date(data['date applied']) })
   }
 
   function setResult(data) {
-    console.log('data in setResult:::', data);
     const declined = data.result.split(' ')[0].toLowerCase();
     editJob({ declined });
   }
@@ -153,6 +154,15 @@ const JobCard = props => {
                 </ModalButton>
 
                 <ModalButton
+                  callback={deleteJob}
+                  title="delete job"
+                  header="Are you sure you want to delete this job?"
+                  {...sharedModalProps}
+                >
+                  <i className="fas fa-trash" />
+                </ModalButton>
+
+                <ModalButton
                   callback={editJob}
                   title="edit job data"
                   job={job}
@@ -161,13 +171,15 @@ const JobCard = props => {
                   <i className="far fa-edit" />
                 </ModalButton>
               </>
-            ) : null}
+            ) : (
+              <h3 style={{ paddingRight: '30px' }}>Actions</h3>
+            )}
         </div>
       </MainSection>
 
       {!props.isHeader
         ? (
-          <MoData expanded={expanded} visibility={visibility} height={height}>
+          <Expandable expanded={expanded} visibility={visibility} height={height}>
             <div className="company">
               <div className="poc">
                 <div>
@@ -188,7 +200,7 @@ const JobCard = props => {
                   ? job.interviews.map(intr => (
                     <div key={intr.number + intr.date} style={{ display: 'flex', width: '220px', justifyContent: 'space-between', margin: '0 0 2px 12px' }}>
                       <p style={{ fontWeight: '400', color: 'white' }}>{intr.number} interview: </p>
-                      <p style={{ color: 'lightgreen' }}>{format(new Date(intr.date), 'MMM dd hh:mm aaa')}</p>
+                      <p style={{ color: 'lightgreen' }}>{format(new Date(intr.date), 'MMM dd - hh:mm aaa')}</p>
                     </div>
                   ))
                   : <p>-</p>
@@ -206,7 +218,7 @@ const JobCard = props => {
 
               <div className="applied">
                 <p className="job-card-modata-label">Date Applied:</p>
-                <p>{job.date_applied ? format(new Date(job.date_applied), 'MMM dd') : '-'}</p>
+                <p>{job.date_applied ? format(new Date(job.date_applied), 'MMMM dd, yyyy') : '-'}</p>
               </div>
 
               <div>
@@ -230,8 +242,8 @@ const JobCard = props => {
                 ? job.comments.map(c => {
                   if (c.date) {
                     return (
-                      <div key={c.name + c.date} style={{ marginBottom: '6px' }}>
-                        <p style={{ color: 'white' }}>{format(new Date(c.date), 'MMM dd')}</p>
+                      <div key={`job-comment-${c.date}`} style={{ marginBottom: '6px' }}>
+                        <p style={{ color: 'white' }}>{format(new Date(c.date), 'MMM dd hh:mm aaa')}</p>
                         <p>{c.comment}</p>
                       </div>
                     )
@@ -241,7 +253,7 @@ const JobCard = props => {
                 })
                 : <p>-</p>}
             </div>
-          </MoData>
+          </Expandable>
         ) : null}
     </Card>
   );
@@ -253,7 +265,7 @@ function mapStateToProps(state) {
   };
 }
 
-const mapDispatchToProps = { saveJob };
+const mapDispatchToProps = { deleteJob, saveJob };
 
 export default connect(mapStateToProps, mapDispatchToProps)(JobCard);
 
@@ -275,7 +287,7 @@ const MainSection = styled.div`
     display: flex;
     justify-content: right;
     padding-right: 10px;
-    width: 100px;
+    width: 160px;
 
     > button {
       background: transparent;
@@ -316,7 +328,7 @@ const MainSection = styled.div`
   }
 `;
 
-const MoData = styled.div`
+const Expandable = styled.div`
   color: lightgreen;
   font-size: .8rem;
   opacity: ${props => props.expanded ? '1' : '0'};
