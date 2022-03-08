@@ -4,7 +4,7 @@ import { Recruiter } from "src/recruiters/entity/recruiter.entity";
 import { User } from "src/users/entities/user.entity";
 
 type Interview = {
-  number: 'first' | 'second' | 'third' | 'etc';
+  number: string;
   date: Date;
   interviewers: string[];
 };
@@ -60,7 +60,7 @@ export class Job extends Document {
   })
   status: string;
 
-  @Prop({ enums: ['i', 'they', 'ghosted'] })
+  @Prop({ enums: ['i', 'they', 'ghosted', 'n/a'] })
   declined: string;
 
   @Prop()

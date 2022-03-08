@@ -20,7 +20,7 @@ export default class BaseAPI {
   }
 
   update(item) {
-    return axios.put(`${this.endpoint}/${item._id}`, item);
+    return axios.patch(`${this.endpoint}/${item._id}`, item);
   }
 
   delete(id) {

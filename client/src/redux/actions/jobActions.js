@@ -13,15 +13,15 @@ export function getJobs(query) {
   }
 }
 
-export function saveJob(recruiter) {
+export function saveJob(job) {
   return async dispatch => {
     try {
       let data;
-      if (recruiter._id) {
-        ({ data } = await API.job.update(recruiter));
+      if (job._id) {
+        ({ data } = await API.job.update(job));
         dispatch({ type: Job.EDIT_JOB, payload: data });
       } else {
-        ({ data } = await API.job.create(recruiter));
+        ({ data } = await API.job.create(job));
         dispatch({ type: Job.ADD_JOB, payload: data });
       }
       return data;

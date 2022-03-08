@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
-import { MainButton, Input, TextArea } from '../../styles/components';
+import { MainButton, Input, TextArea, Select } from '../../styles/components';
 
 const Modal = props => {
   const [state, setState] = useState({});
@@ -72,6 +72,7 @@ const Modal = props => {
                     type="text"
                     name={item.label.toLowerCase()}
                     onChange={handleInputChange}
+                    placeholder={item.placeholder}
                     value={itemValue}
                   />
                 )}
@@ -80,9 +81,41 @@ const Modal = props => {
                     type="text"
                     name={item.label.toLowerCase()}
                     onChange={handleInputChange}
+                    placeholder={item.placeholder}
                     value={itemValue}
                     full
                   />
+                )}
+                {item.type === 'date' && (
+                  <Input
+                    type="date"
+                    name={item.label.toLowerCase()}
+                    onChange={handleInputChange}
+                    placeholder={item.placeholder}
+                    value={itemValue}
+                    full
+                  />
+                )}
+                {item.type === 'time' && (
+                  <Input
+                    type="time"
+                    name={item.label.toLowerCase()}
+                    onChange={handleInputChange}
+                    placeholder={item.placeholder}
+                    value={itemValue}
+                    full
+                  />
+                )}
+                {item.type === 'select' && (
+                  <Select
+                    name={item.label.toLowerCase()}
+                    onChange={handleInputChange}
+                    value={itemValue}
+                    full
+                  >
+                    <option value="">select one</option>
+                    {item.options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                  </Select>
                 )}
               </InputWrapper>
             )

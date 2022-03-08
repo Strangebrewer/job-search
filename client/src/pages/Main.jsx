@@ -117,7 +117,7 @@ const Title = styled.h1`
 
 const Container = styled.main`
   margin: 22px auto 0 auto;
-  width: 900px;
+  width: 1000px;
 
   > h3 {
     color: ${props => props.theme.mainRed};

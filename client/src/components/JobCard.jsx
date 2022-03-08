@@ -1,20 +1,93 @@
 import { useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
+import { format } from 'date-fns';
+
+import JobModal from "./JobModal";
+import ModalButton from "./elements/ModalButton";
+import Modal from "./elements/Modal";
+
+import { STATUSES } from "../utils/constants";
+import { capitalize } from "../utils/utils";
+
+import { saveJob } from '../redux/actions/jobActions';
 
 const JobCard = props => {
   const [expanded, setExpanded] = useState(false);
-  const [styles, setStyles] = useState({ maxHeight: '0px', visiblity: 'hidden' });
   const [visibility, setVisibility] = useState('hidden');
+  const [height, setHeight] = useState('0px');
 
   const { job } = props;
 
   function toggleExpansion() {
     if (expanded) setTimeout(() => setVisibility('hidden'), 200);
     if (!expanded) setTimeout(() => setVisibility('visible'), 200);
+    const numComments = job.comments && Array.isArray(job.comments) ? job.comments.length : 0;
+    const calcHeight = 200 + (numComments * 40);
+    setHeight(`${calcHeight}px`);
     setExpanded(!expanded);
-    setStyles(styles);
   }
+
+  function editJob(data) {
+    data = { _id: job._id, ...data };
+    props.saveJob(data);
+  }
+
+  function addInterview(data) {
+    let { number, date, time, interviewers } = data;
+    const formatted = new Date(`${date}:${time}`);
+    const interviews = job.interviews && Array.isArray(job.interviews) ? job.interviews : [];
+    interviews.push({ number, date: formatted, interviewers: interviewers.split(',') });
+    editJob({ interviews });
+  }
+
+  function updateStatus(data) {
+    editJob(data);
+  }
+
+  function addComment(data) {
+    console.log('data in addComment:::', data);
+    const comments = job.comments && Array.isArray(job.comments) ? job.comments : [];
+    comments.push({ comment: data.comment, date: new Date() });
+    editJob({ comments });
+  }
+
+  function addApplyDate(data) {
+    console.log('data in addApplyDate:::', data);
+    editJob({ date_applied: new Date(data['date applied']) })
+  }
+
+  function setResult(data) {
+    console.log('data in setResult:::', data);
+    const declined = data.result.split(' ')[0].toLowerCase();
+    editJob({ declined });
+  }
+
+  const sharedModalProps = {
+    modal: Modal,
+    cancelText: "Cancel",
+    confirmText: "Submit"
+  };
+
+  const interviewModalItems = [
+    {
+      label: 'number',
+      type: 'text',
+      placeholder: 'e.g. \'first\', \'second\''
+    },
+    {
+      label: 'Date',
+      type: 'date'
+    },
+    {
+      label: 'Time',
+      type: 'time'
+    },
+    {
+      label: 'Interviewers',
+      type: 'text'
+    }
+  ];
 
   return (
     <Card isHeader={props.isHeader}>
@@ -29,11 +102,72 @@ const JobCard = props => {
         <p className="name">{job.company_name}</p>
         <p className="from">{job.work_from}</p>
         <p className="status">{job.status}</p>
+        <div>
+          {!props.isHeader
+            ? (
+              <>
+                <ModalButton
+                  callback={addApplyDate}
+                  title="add date applied"
+                  items={[{ label: 'Date Applied', type: 'date' }]}
+                  {...sharedModalProps}
+                >
+                  <i className="far fa-file" />
+                </ModalButton>
+
+                <ModalButton
+                  callback={addInterview}
+                  title="add an interview"
+                  items={interviewModalItems}
+                  heading="Interview Deets"
+                  {...sharedModalProps}
+                >
+                  <i className="far fa-calendar-alt" />
+                </ModalButton>
+
+                <ModalButton
+                  callback={updateStatus}
+                  title="update job status"
+                  items={[{ label: 'Status', type: 'select', options: STATUSES }]}
+                  {...sharedModalProps}
+                >
+                  <i className="fas fa-forward" />
+                </ModalButton>
+
+                <ModalButton
+                  callback={addComment}
+                  title="add a comment"
+                  items={[{ label: 'Comment', type: 'textarea' }]}
+                  {...sharedModalProps}
+                >
+                  <i className="far fa-comment" />
+                </ModalButton>
+
+                <ModalButton
+                  callback={setResult}
+                  title="set the result"
+                  items={[{ label: 'Result', type: 'select', options: ['I declined', 'They declined', 'Ghosted', 'N/A'] }]}
+                  {...sharedModalProps}
+                >
+                  <i className="fas fa-eject" />
+                </ModalButton>
+
+                <ModalButton
+                  callback={editJob}
+                  title="edit job data"
+                  job={job}
+                  modal={JobModal}
+                >
+                  <i className="far fa-edit" />
+                </ModalButton>
+              </>
+            ) : null}
+        </div>
       </MainSection>
 
       {!props.isHeader
         ? (
-          <MoData expanded={expanded} visibility={visibility}>
+          <MoData expanded={expanded} visibility={visibility} height={height}>
             <div className="company">
               <div className="poc">
                 <div>
@@ -52,17 +186,9 @@ const JobCard = props => {
                 <p className="job-card-modata-label">Interviews:</p>
                 {job.interviews && job.interviews.length
                   ? job.interviews.map(intr => (
-                    <div>
-                      <p>{intr.number} interview</p>
-                      <p>{intr.date}</p>
-                      <div>
-                        {intr.interviewers.map((dude, i) => {
-                          if (i + 1 === intr.interviewers.length) {
-                            return <p>{dude}</p>;
-                          }
-                          return <p>{dude}, </p>
-                        })}
-                      </div>
+                    <div key={intr.number + intr.date} style={{ display: 'flex', width: '220px', justifyContent: 'space-between', margin: '0 0 2px 12px' }}>
+                      <p style={{ fontWeight: '400', color: 'white' }}>{intr.number} interview: </p>
+                      <p style={{ color: 'lightgreen' }}>{format(new Date(intr.date), 'MMM dd hh:mm aaa')}</p>
                     </div>
                   ))
                   : <p>-</p>
@@ -80,24 +206,39 @@ const JobCard = props => {
 
               <div className="applied">
                 <p className="job-card-modata-label">Date Applied:</p>
-                <p>{job.date_applied || '-'}</p>
+                <p>{job.date_applied ? format(new Date(job.date_applied), 'MMM dd') : '-'}</p>
               </div>
 
               <div>
-                <p className="job-card-modata-label">Result:</p>
+                <p className="job-card-modata-label">Declined?</p>
                 {job.declined
                   ? (
-                    <p>{job.declined === 'ghosted' ? 'ghosted' : `${job.declined} declined`}</p>
-                  ) : '-'}
+                    <p>{
+                      job.declined === 'ghosted'
+                        ? 'ghosted'
+                        : job.declined === 'n/a'
+                          ? 'n/a'
+                          : `${capitalize(job.declined)} declined`
+                    }</p>
+                  ) : 'n/a'}
               </div>
             </div>
 
             <div className="comments">
               <p className="job-card-modata-label">Comments:</p>
               {job.comments && job.comments.length
-                ? job.comments.map(c => (
-                  <p>{c}</p>
-                ))
+                ? job.comments.map(c => {
+                  if (c.date) {
+                    return (
+                      <div key={c.name + c.date} style={{ marginBottom: '6px' }}>
+                        <p style={{ color: 'white' }}>{format(new Date(c.date), 'MMM dd')}</p>
+                        <p>{c.comment}</p>
+                      </div>
+                    )
+                  } else {
+                    return <p key={c} style={{ marginBottom: '6px' }}>{c}</p>
+                  }
+                })
                 : <p>-</p>}
             </div>
           </MoData>
@@ -112,7 +253,7 @@ function mapStateToProps(state) {
   };
 }
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = { saveJob };
 
 export default connect(mapStateToProps, mapDispatchToProps)(JobCard);
 
@@ -129,6 +270,31 @@ const MainSection = styled.div`
   display: flex;
   justify-content: space-between;
   /* padding-bottom: ${props => props.expanded ? '12px' : '0'}; */
+
+  > div {
+    display: flex;
+    justify-content: right;
+    padding-right: 10px;
+    width: 100px;
+
+    > button {
+      background: transparent;
+      border: none;
+      color: ${props => props.theme.nGreen};
+      cursor: pointer;
+      font-size: .8rem;
+      padding: 0 4px;
+
+      &:hover {
+        color: ${props => props.theme.nPurple};
+      }
+
+      &:disabled {
+        color: grey;
+        cursor: default;
+      }
+    }
+  }
 
   > .title {
     width: 260px;
@@ -151,16 +317,16 @@ const MainSection = styled.div`
 `;
 
 const MoData = styled.div`
-  color: #b4b4b4;
+  color: lightgreen;
   font-size: .8rem;
   opacity: ${props => props.expanded ? '1' : '0'};
   padding-right: 24px;
   padding-left: 24px;
   padding-top: ${props => props.expanded ? '12px' : '0px'};
-  height: ${props => props.expanded ? '225px' : '0px'};
+  height: ${props => props.expanded ? props.height : '0px'};
   visibility: ${props => props.visibility};
   transition: height ${props => props.expanded ? '0.3s' : '0.6s'} ease-in-out,
-    opacity ${props => props.expanded ? '0.2s ease-in-out 0.1s' : '0.2s ease-in-out'},
+    opacity ${props => props.expanded ? '0.3s ease-in-out 0.1s' : '0.3s ease-in-out'},
     height 0.3s ease-in-out,
     padding 0.3s ease-in-out;
 
@@ -202,6 +368,7 @@ const MoData = styled.div`
   }
 
   > .comments {
+    color: lightblue;
     padding-top: 16px;
   }
 `;

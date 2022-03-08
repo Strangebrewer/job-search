@@ -26,7 +26,7 @@ export class JobsController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, updateJobDto: UpdateJobDto) {
+  update(@Param('id') id: string, @Body() updateJobDto: UpdateJobDto) {
     return this.jobsService.update(id, updateJobDto);
   }
 

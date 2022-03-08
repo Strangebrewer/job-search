@@ -24,7 +24,7 @@ export class RecruitersController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, updateRecruiterDto: UpdateRecruiterDto) {
+  update(@Param('id') id: string, @Body() updateRecruiterDto: UpdateRecruiterDto) {
     return this.recruitersService.update(id, updateRecruiterDto);
   }
 
