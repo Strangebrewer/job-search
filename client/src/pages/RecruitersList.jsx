@@ -62,14 +62,6 @@ const RecruitersList = props => {
             >
               Add New Recruiter
             </ModalButton>
-
-            <ModalButton
-              callback={props.saveJob}
-              title="add a new job"
-              modal={JobModal}
-            >
-              Add New Job
-            </ModalButton>
           </Buttons>
         )}
       </Header>

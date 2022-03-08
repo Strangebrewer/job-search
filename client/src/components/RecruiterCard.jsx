@@ -20,7 +20,7 @@ const RecruiterCard = props => {
     if (expanded) setTimeout(() => setVisibility('hidden'), 200);
     if (!expanded) setTimeout(() => setVisibility('visible'), 200);
     const numComments = recruiter.comments && Array.isArray(recruiter.comments) ? recruiter.comments.length : 0;
-    const calcHeight = 12 + (numComments * 32);
+    const calcHeight = 32 + (numComments * 32);
     setHeight(`${calcHeight}px`);
     setExpanded(!expanded);
   }

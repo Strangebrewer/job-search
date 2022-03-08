@@ -63,6 +63,16 @@ const JobModal = props => {
   }
 
   function closeModal() {
+    setJobTitle('');
+    setPocName('');
+    setPocTitle('');
+    setCompany('');
+    setAddress('');
+    setCity('');
+    setState('');
+    setRecruiter('');
+    setWorkFrom('');
+    setComment('');
     props.close();
   }
 

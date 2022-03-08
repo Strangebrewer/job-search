@@ -51,6 +51,12 @@ const RecruiterModal = props => {
   }
 
   function closeModal() {
+    setName('');
+    setCompany('');
+    setPhone('');
+    setEmail('');
+    setRating('');
+    setComment('');
     props.close();
   }
 

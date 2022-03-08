@@ -65,14 +65,6 @@ const Main = props => {
 
         <Buttons>
           <ModalButton
-            callback={props.saveRecruiter}
-            title="add a new recruiter"
-            modal={RecruiterModal}
-          >
-            Add New Recruiter
-          </ModalButton>
-
-          <ModalButton
             callback={props.saveJob}
             title="add a new job"
             modal={JobModal}
@@ -156,7 +148,7 @@ export const Title = styled.h1`
 
 export const Filters = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   margin: auto;
   width: 400px;
 
