@@ -89,7 +89,7 @@ const RecruiterCard = props => {
                 <ModalButton
                   callback={deleteRecruiter}
                   title="delete recruiter"
-                  header="Are you sure you want to delete this recruiter?"
+                  heading="Are you sure you want to delete this recruiter?"
                   {...sharedModalProps}
                 >
                   <i className="fas fa-trash" />
@@ -98,7 +98,7 @@ const RecruiterCard = props => {
                 <ModalButton
                   callback={editRecruiter}
                   title="edit recruiter data"
-                  job={recruiter}
+                  recruiter={recruiter}
                   modal={RecruiterModal}
                 >
                   <i className="far fa-edit" />

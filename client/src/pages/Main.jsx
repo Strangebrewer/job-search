@@ -18,8 +18,9 @@ import { STATUSES } from '../utils/constants';
 const Main = props => {
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState('');
+  const [recruiterSearch, setRecruiterSearch] = useState('');
 
-  const { jobs, recruiters, authenticated, user } = props;
+  const { jobs, recruiters, user } = props;
 
   useEffect(() => {
     (async function () {
@@ -31,13 +32,22 @@ const Main = props => {
       }
       setLoading(false);
     })();
-  }, [recruiters.length, jobs.length]);
+  }, []);
 
   function filter({ target }) {
     const { name, value } = target;
+    if (name === 'status') {
+      setStatus(value);
+      setRecruiterSearch('');
+    } else {
+      setRecruiterSearch(value);
+      setStatus('');
+    }
     const query = {};
-    if (name === 'status') query.status = value;
-    else query.recruiter = value;
+    if (value) {
+      if (name === 'status') query.status = value;
+      else query.recruiter = value;
+    }
     props.getJobs(query);
   }
 
@@ -79,9 +89,10 @@ const Main = props => {
               <Label>Filter by Status</Label>
               <Select
                 name="status"
+                value={status}
                 onChange={filter}
               >
-                <option value="">select a status</option>
+                <option value="">see all</option>
                 {STATUSES.map(s => <option key={`filter-by-${s}`} value={s}>{s}</option>)}
               </Select>
             </div>
@@ -90,10 +101,11 @@ const Main = props => {
               <Label>Filter by Recruiter</Label>
               <Select
                 name="recruiter"
+                value={recruiterSearch}
                 onChange={filter}
               >
-                <option value="">select a recruiter</option>
-                {props.recruiters.map(r => <option key={`filter-by-${r._id}`} value={r._id}>{r.name}</option>)}
+                <option value="">see all</option>
+                {recruiters.map(r => <option key={`filter-by-${r._id}`} value={r._id}>{r.name}</option>)}
               </Select>
             </div>
           </Filters>
@@ -115,7 +127,6 @@ const Main = props => {
 
 function mapStateToProps(state) {
   return {
-    authenticated: state.auth.authenticated,
     jobs: state.jobs,
     recruiters: state.recruiters,
     user: state.user

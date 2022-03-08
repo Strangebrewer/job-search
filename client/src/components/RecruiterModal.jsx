@@ -43,7 +43,7 @@ const RecruiterModal = props => {
     if (phone) data.phone = phone;
     if (email) data.email = email;
     if (rating) data.rating = rating;
-    if (comment) data.comments.push(comment);
+    if (comment) data.comments.push({ comment, date: new Date() });
     if (recruiter) data._id = recruiter._id;
 
     props.callback(data);

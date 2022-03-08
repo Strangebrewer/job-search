@@ -156,7 +156,7 @@ const JobCard = props => {
                 <ModalButton
                   callback={deleteJob}
                   title="delete job"
-                  header="Are you sure you want to delete this job?"
+                  heading="Are you sure you want to delete this job?"
                   {...sharedModalProps}
                 >
                   <i className="fas fa-trash" />

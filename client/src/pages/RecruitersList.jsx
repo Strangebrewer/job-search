@@ -18,7 +18,7 @@ import { Buttons, Container, Filters, Title, Wrapper } from './Main';
 const RecruitersList = props => {
   const [loading, setLoading] = useState(true);
 
-  const { authenticated, jobs, recruiters, user } = props;
+  const { jobs, recruiters, user } = props;
 
   useEffect(() => {
     (async function () {
@@ -93,7 +93,7 @@ const RecruitersList = props => {
           <Container>
             <h3>Recrooders!</h3>
             <RecruiterCard isHeader recruiter={recruiterHeader} />
-            {props.recruiters.map(r => {
+            {recruiters.map(r => {
               return <RecruiterCard key={`rec-${r.name}`} recruiter={r} />
             })}
           </Container>
@@ -105,7 +105,6 @@ const RecruitersList = props => {
 
 function mapStateToProps(state) {
   return {
-    authenticated: state.auth.authenticated,
     jobs: state.jobs,
     recruiters: state.recruiters,
     user: state.user
