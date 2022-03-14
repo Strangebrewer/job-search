@@ -10,13 +10,14 @@ import JobCard from '../components/JobCard';
 
 import { getRecruiters, saveRecruiter } from '../redux/actions/recruiterActions';
 import { getJobs, saveJob } from '../redux/actions/jobActions';
-import { Label, Select } from '../styles/components';
+import { Checkbox, Label, Select } from '../styles/components';
 import { STATUSES } from '../utils/constants';
 
 const Main = props => {
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState('');
   const [recruiterSearch, setRecruiterSearch] = useState('');
+  const [hideDeclined, setHideDeclined] = useState(true);
 
   const { jobs, recruiters, user } = props;
 
@@ -33,19 +34,29 @@ const Main = props => {
   }, []);
 
   function filter({ target }) {
-    const { name, value } = target;
-    if (name === 'status') {
-      setStatus(value);
-      setRecruiterSearch('');
-    } else {
-      setRecruiterSearch(value);
-      setStatus('');
-    }
+    const { name, value, checked } = target;
     const query = {};
-    if (value) {
-      if (name === 'status') query.status = value;
-      else query.recruiter = value;
+
+    switch (name) {
+      case 'status':
+        setStatus(value);
+        setRecruiterSearch('');
+        if (value) query.status = value;
+        if (hideDeclined) query.hideDeclined = hideDeclined;
+        break;
+      case 'recruiter':
+        setRecruiterSearch(value);
+        setStatus('');
+        if (value) query.recruiter = value;
+        if (hideDeclined) query.hideDeclined = hideDeclined;
+        break;
+      default:
+        if (checked) query.hideDeclined = checked;
+        setHideDeclined(checked);
+        if (status) query.status = status;
+        if (recruiterSearch) query.recruiter = recruiterSearch;
     }
+
     props.getJobs(query);
   }
 
@@ -75,6 +86,17 @@ const Main = props => {
       {!loading && (
         <>
           <Filters>
+            <div className='checkbox-wrap'>
+              <Label>hide declined:</Label>
+              <Checkbox
+                type="checkbox"
+                name="hideDeclined"
+                value={hideDeclined}
+                checked={hideDeclined}
+                onChange={filter}
+              />
+            </div>
+
             <div>
               <Label>Filter by Status</Label>
               <Select
@@ -148,12 +170,28 @@ export const Filters = styled.div`
   display: flex;
   justify-content: space-around;
   margin: auto;
-  width: 400px;
+  width: 500px;
 
   > div {
-    width: 45%;
+    width: 30%;
     > label, select {
       width: 100%;
+    }
+  }
+
+  > .checkbox-wrap {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    padding-top: 20px;
+
+    > label {
+      width: unset;
+    }
+    > input {
+      display: inline-block;
+      margin-top: -1px;
+      margin-left: 10px;
     }
   }
 `;

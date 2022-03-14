@@ -132,6 +132,13 @@ export const Input = styled.input`
   }
 `;
 
+export const Checkbox = styled.input`
+  background-color: transparent;
+  border: none;
+  color: ${props => props.theme.nBlue};
+  outline: transparent;
+`;
+
 export const TextArea = styled.textarea`
   background-color: #ddd;
   border: none;
