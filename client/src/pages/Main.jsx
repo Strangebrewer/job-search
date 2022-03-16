@@ -17,7 +17,7 @@ const Main = props => {
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState('');
   const [recruiterSearch, setRecruiterSearch] = useState('');
-  const [hideDeclined, setHideDeclined] = useState(true);
+  const [hideDeclined, setHideDeclined] = useState(false);
 
   const { jobs, recruiters, user } = props;
 
