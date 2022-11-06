@@ -12,15 +12,16 @@ export function getRecruiters(query) {
   }
 }
 
-export function saveRecruiter(recruiter) {
+export function saveRecruiter(recruiter, showingArchived = false) {
   return async dispatch => {
     try {
       let data;
       if (recruiter._id) {
-        ({ data } = await API.recruiter.update(recruiter));
+        data = (await API.recruiter.update(recruiter))?.data;
+        data.showingArchived = showingArchived;
         dispatch({ type: Recruiter.EDIT_RECRUITER, payload: data });
       } else {
-        ({ data } = await API.recruiter.create(recruiter));
+        data = (await API.recruiter.create(recruiter))?.data;
         dispatch({ type: Recruiter.ADD_RECRUITER, payload: data });
       }
       return data;

@@ -12,8 +12,14 @@ export class RecruitersService {
   ) { }
 
   findAll(userId: string, query: Record<string, unknown>) {
-    query = { user: userId, ...query };
-    return this.recruiterModel.find(query)
+    let { includeArchived, ...rest } = query;
+    query = { user: userId, archived: false, ...rest };
+    const options: Record<string, any> = {};
+    if (includeArchived) {
+      delete query.archived;
+      options.sort = { archived: 1 };
+    }
+    return this.recruiterModel.find(query, null, options);
   }
 
   create(createRecruiterDto: CreateRecruiterDto) {

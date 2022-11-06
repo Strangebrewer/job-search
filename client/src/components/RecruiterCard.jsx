@@ -15,7 +15,7 @@ const RecruiterCard = props => {
   const [visibility, setVisibility] = useState('hidden');
   const [height, setHeight] = useState('0px');
 
-  const { recruiter } = props;
+  const { recruiter, showingArchived } = props;
 
   function toggleExpansion() {
     if (expanded) setTimeout(() => setVisibility('hidden'), 200);
@@ -33,6 +33,10 @@ const RecruiterCard = props => {
 
   function deleteRecruiter() {
     props.deleteRecruiter(recruiter._id);
+  }
+
+  function toggleArchived() {
+    props.saveRecruiter({ _id: recruiter._id, ...recruiter, archived: !recruiter.archived }, showingArchived);
   }
 
   function updateRating(data) {
@@ -85,6 +89,15 @@ const RecruiterCard = props => {
                   {...sharedModalProps}
                 >
                   <i className="far fa-comment" />
+                </ModalButton>
+
+                <ModalButton
+                  callback={toggleArchived}
+                  title={`${recruiter.archived ? 'restore' : 'archive'} recruiter`}
+                  heading={`Are you sure you want to ${recruiter.archived ? 'restore' : 'archive'} this recruiter?`}
+                  {...sharedModalProps}
+                >
+                  <i className={`fas fa-${recruiter.archived ? 'window-restore' : 'archive'}`} />
                 </ModalButton>
 
                 <ModalButton

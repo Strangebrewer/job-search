@@ -40,6 +40,9 @@ export class Job extends Document {
   @Prop()
   company_state: string;
 
+  @Prop({ required: true, default: false })
+  archived: boolean;
+
   @Prop({ required: true })
   job_title: string;
 

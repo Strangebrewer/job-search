@@ -7,6 +7,10 @@ export function recruiterReducer(state = [], action) {
     case Recruiter.ADD_RECRUITER:
       return [...state, action.payload];
     case Recruiter.EDIT_RECRUITER:
+      if (!action.payload.showingArchived && action.payload.archived) {
+        state = state.filter(r => r._id !== action.payload._id);
+        delete action.payload.showingArchived;
+      }
       return state.map(r => {
         if (r._id === action.payload._id) {
           return action.payload;

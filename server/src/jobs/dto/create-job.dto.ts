@@ -1,4 +1,4 @@
-import { IsDate, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsDate, IsOptional, IsString } from "class-validator";
 
 export class CreateJobDto {
   @IsOptional()
@@ -23,6 +23,10 @@ export class CreateJobDto {
   @IsOptional()
   @IsString()
   readonly company_address: string;
+  
+  @IsOptional()
+  @IsBoolean()
+  readonly archived: boolean;
 
   @IsOptional()
   @IsString()

@@ -12,10 +12,13 @@ export class JobsService {
   ) { }
 
   findAll(userId: string, query: Record<string, unknown>) {
-    let { hideDeclined, ...rest } = query;
-    query = { user: userId, ...rest };
+    let { hideDeclined, includeArchived, ...rest } = query;
+    query = { user: userId, archived: false, ...rest };
     if (hideDeclined === 'true') {
       query.declined = { $nin: ['i', 'they', 'ghosted'] };
+    }
+    if (includeArchived) {
+      delete query.archived;
     }
     return this.jobModel.find(query);
   }

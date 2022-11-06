@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateRecruiterDto  {
   @IsString()
@@ -26,6 +26,10 @@ export class CreateRecruiterDto  {
   @IsOptional()
   @IsString({ each: true })
   comments: string[];
+
+  @IsOptional()
+  @IsBoolean()
+  archived: boolean;
   
   @IsString()
   user: string;

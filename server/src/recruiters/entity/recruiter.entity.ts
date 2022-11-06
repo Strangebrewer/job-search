@@ -29,6 +29,9 @@ export class Recruiter extends Document {
 
   @Prop()
   comments: Comment[];
+
+  @Prop({ required: true, default: false })
+  archived: boolean;
   
   @Prop({ required: true, ref: User.name })
   user: string

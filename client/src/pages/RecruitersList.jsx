@@ -8,13 +8,15 @@ import RecruiterModal from '../components/RecruiterModal';
 
 import { getJobs, saveJob } from '../redux/actions/jobActions';
 import { getRecruiters, saveRecruiter } from '../redux/actions/recruiterActions';
-import { Label, Select } from '../styles/components';
+import { Checkbox, Label, Select } from '../styles/components';
 import { RATINGS } from '../utils/constants';
 
 import { Buttons, Container, Filters, Title, Wrapper } from './Main';
 
 const RecruitersList = props => {
   const [loading, setLoading] = useState(true);
+  const [recruiter, setRecruiter] = useState(0);
+  const [includeArchived, setIncludeArchived] = useState(false);
 
   const { jobs, recruiters, user } = props;
 
@@ -29,11 +31,23 @@ const RecruitersList = props => {
       setLoading(false);
     })();
   }, []);
+  
 
   function filter({ target }) {
-    const { value } = target;
+    const { name, value, checked } = target;
     const query = {};
-    if (value) query.rating = Number(value);
+
+    if (name === 'recruiter') {
+      if (value) query.rating = Number(value);
+      setRecruiter(Number(value));
+      if (includeArchived) query.includeArchived = includeArchived;
+    }
+    if (name === 'includeArchived') {
+      if (checked) query.includeArchived = checked;
+      setIncludeArchived(checked);
+      if (recruiter) query.recruiter = recruiter;
+    }
+
     props.getRecruiters(query);
   }
 
@@ -67,9 +81,20 @@ const RecruitersList = props => {
       {!loading && (
         <>
           <Filters>
-            <div>
+            <div className='checkbox-wrap'>
+              <Label>include archived:</Label>
+              <Checkbox
+                type="checkbox"
+                name="includeArchived"
+                value={includeArchived}
+                checked={includeArchived}
+                onChange={filter}
+              />
+            </div>
+
+            <div className="select-wrap">
               <Label>Filter by Rating</Label>
-              <Select onChange={filter}>
+              <Select name="recruiter" value={recruiter} onChange={filter}>
                 <option value="">select a rating</option>
                 {RATINGS.map(r => <option key={`rating-${r}`} value={r}>{r}</option>)}
               </Select>
@@ -80,7 +105,7 @@ const RecruitersList = props => {
             <h3>Recrooders!</h3>
             <RecruiterCard isHeader recruiter={recruiterHeader} />
             {recruiters.map(r => {
-              return <RecruiterCard key={`rec-${r.name}`} recruiter={r} />
+              return <RecruiterCard key={`rec-${r.name}`} recruiter={r} showingArchived={includeArchived} />
             })}
           </Container>
         </>

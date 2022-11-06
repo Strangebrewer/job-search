@@ -37,6 +37,10 @@ const JobCard = props => {
     props.deleteJob(job._id);
   }
 
+  function toggleArchived() {
+    props.saveJob({ _id: job._id, ...job, archived: !job.archived });
+  }
+
   function addInterview(data) {
     let { number, date, time, interviewers } = data;
     const formatted = new Date(`${date}:${time}`);
@@ -94,10 +98,11 @@ const JobCard = props => {
     <Card isHeader={props.isHeader}>
       <MainSection expanded={expanded}>
         {!props.isHeader
-          ? expanded
-            ? <ExpandButton onClick={toggleExpansion}>&#9650;</ExpandButton>
-            : <ExpandButton onClick={toggleExpansion}>&#9660;</ExpandButton>
-          : null}
+          ? (
+            <ExpandButton onClick={toggleExpansion}>
+              {expanded ? <span>&#9650;</span> : <span>&#9660;</span>}
+            </ExpandButton>
+          ) : null}
 
         <p className="title">{job.job_title}</p>
         <p className="name">{job.company_name}</p>
@@ -124,6 +129,15 @@ const JobCard = props => {
                   {...sharedModalProps}
                 >
                   <i className="far fa-calendar-alt" />
+                </ModalButton>
+
+                <ModalButton
+                  callback={toggleArchived}
+                  title={`${job.archived ? 'restore' : 'archive'} job`}
+                  heading={`Are you sure you want to ${job.archived ? 'archive' : 'restore'} this job?`}
+                  {...sharedModalProps}
+                >
+                  <i className={`fas fa-${job.archived ? 'window-restore' : 'archive'}`} />
                 </ModalButton>
 
                 <ModalButton

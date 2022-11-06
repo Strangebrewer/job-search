@@ -18,6 +18,7 @@ const Main = props => {
   const [status, setStatus] = useState('');
   const [recruiterSearch, setRecruiterSearch] = useState('');
   const [hideDeclined, setHideDeclined] = useState(false);
+  const [includeArchived, setIncludeArchived] = useState(false);
 
   const { jobs, recruiters, user } = props;
 
@@ -42,19 +43,30 @@ const Main = props => {
         setStatus(value);
         setRecruiterSearch('');
         if (value) query.status = value;
-        if (hideDeclined) query.hideDeclined = hideDeclined;
+        if (hideDeclined) query.hideDeclined = !!hideDeclined;
+        if (includeArchived) query.includeArchived = !!includeArchived;
         break;
       case 'recruiter':
         setRecruiterSearch(value);
         setStatus('');
         if (value) query.recruiter = value;
-        if (hideDeclined) query.hideDeclined = hideDeclined;
+        if (hideDeclined) query.hideDeclined = !!hideDeclined;
+        if (includeArchived) query.includeArchived = !!includeArchived;
+        break;
+      case 'includeArchived':
+        if (checked) query.includeArchived = checked;
+        setIncludeArchived(checked);
+        if (status) query.status = status;
+        if (recruiterSearch) query.recruiter = recruiterSearch;
+        if (hideDeclined) query.hideDeclined = !!hideDeclined;
         break;
       default:
         if (checked) query.hideDeclined = checked;
         setHideDeclined(checked);
         if (status) query.status = status;
         if (recruiterSearch) query.recruiter = recruiterSearch;
+        if (includeArchived) query.includeArchived = !!includeArchived;
+        break;
     }
 
     props.getJobs(query);
@@ -96,8 +108,19 @@ const Main = props => {
                 onChange={filter}
               />
             </div>
+            
+            <div className='checkbox-wrap'>
+              <Label>include archived:</Label>
+              <Checkbox
+                type="checkbox"
+                name="includeArchived"
+                value={includeArchived}
+                checked={includeArchived}
+                onChange={filter}
+              />
+            </div>
 
-            <div>
+            <div className='select-wrap'>
               <Label>Filter by Status</Label>
               <Select
                 name="status"
@@ -109,7 +132,7 @@ const Main = props => {
               </Select>
             </div>
 
-            <div>
+            <div className='select-wrap'>
               <Label>Filter by Recruiter</Label>
               <Select
                 name="recruiter"
@@ -168,21 +191,30 @@ export const Title = styled.h1`
 
 export const Filters = styled.div`
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   margin: auto;
-  width: 500px;
 
   > div {
-    width: 30%;
+    margin-right: 20px;
+    &:last-of-type {
+      margin-right: 0;
+    }
+  }
+
+  > .select-wrap {
+    min-width: 150px;
+    max-width: 150px;
     > label, select {
       width: 100%;
     }
   }
 
   > .checkbox-wrap {
+    /* min-width: 150px; */
+    max-width: 150px;
     align-items: center;
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
     padding-top: 20px;
 
     > label {
@@ -198,7 +230,7 @@ export const Filters = styled.div`
 
 export const Container = styled.main`
   margin: 22px auto 0 auto;
-  width: 1100px;
+  width: 1200px;
 
   > h3 {
     color: ${props => props.theme.mainRed};
